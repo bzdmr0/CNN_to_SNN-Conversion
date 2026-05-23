@@ -1,0 +1,602 @@
+This document summarizes the converted LIF-SNN model for ship/no_ship satellite 
+image classification and provides the key implementation details required for FPGA/ASIC-oriented 
+hardware development.
+
+===========================================================================================================
+
+SUMMARY OF MODEL:
+
+Base ANN: MobileNetV4-Conv-S
+Task: Binary satellite image classification
+Classes: no_ship / ship
+Input size: 224 × 224 × 3
+Output classes: 2
+Conversion type: ANN-to-SNN conversion
+Neuron type: LIF
+Readout: Output LIF spike count
+Best timestep: T = 192
+
+T=128 also gives very good results.
+
+===========================================================================================================
+
+FINAL SNN CONFIGURATION:
+
+checkpoint_path = "aug_80k_best_mobilenetv4_ship_classifier.pth"
+threshold_path = "aug_80k_on30k_channelwise_thresholds.pth"
+
+timesteps = 128
+decay = 0.99
+threshold_scale = 1.0
+scale_output = True
+
+use_output_lif = True
+output_threshold = 1.0
+output_current_mode = "shift"
+
+fold_bn = True
+zero_classifier_bias = True
+
+layer_threshold_scales = {}
+
+The final selected model uses the 80k ANN checkpoint with channel-wise thresholds calibrated
+using the 30k calibration set. This is a cross-calibrated SNN setup.
+The final classifier output is also converted to LIF spike-count readout, so the decision is made by
+comparing output spike counts.
+
+===========================================================================================================
+
+ANN to SNN CONVERSION DETAILS:
+
+Original ANN block:
+Conv → BatchNorm → ReLU
+
+Converted SNN block:
+FusedConv → LIF
+
+Conv layers keep the learned spatial filters.
+BatchNorm is folded into Conv for hardware-friendly inference.
+ReLU activations are replaced with LIF neurons.
+The final output is converted into class spike counts using Output LIF neurons.
+
+===========================================================================================================
+
+LIF NEURON DYNAMICS:
+
+At each timestep:
+1. Input current is received from previous Conv/Linear layer.
+2. Membrane potential decays by decay factor.
+3. New input is integrated.
+4. If membrane >= threshold, spike is generated.
+5. Membrane is reset by subtraction.
+
+===========================================================================================================
+
+THRESHOLD INFORMATION:
+
+The final model uses channel-wise thresholds instead of a single scalar threshold per layer.
+Each output channel has its own threshold value with shape [1, C, 1, 1].
+
+| Threshold type | Shape          | Meaning                       |
+| -------------- | -------------- | ----------------------------- |
+| Layer-wise     | scalar         | One threshold for whole layer |
+| Channel-wise   | `[1, C, 1, 1]` | One threshold per channel     |
+
+===========================================================================================
+
+BN FOLDING:
+
+BatchNorm is not implemented as a separate hardware block. Instead, BatchNorm parameters are folded into 
+the preceding Conv weights and bias.
+
+scale = gamma / sqrt(var + eps)
+
+W_fused = W * scale
+b_fused = beta + (b - mean) * scale
+
+===========================================================================================
+
+PERFORMANCE:
+
+| Model   | Type |   T | Accuracy | Balanced Acc | no_ship Recall | ship Recall |
+| ------- | ---- | --: | -------: | -----------: | -------------: | ----------: |
+| aug_30k | ANN  |   - |   0.9556 |            - |         0.9471 |      0.9640 |
+| aug_30k | SNN  | 128 |   0.9151 |       0.9151 |         0.9804 |      0.8498 |
+| aug_30k | SNN  | 256 |   0.9382 |       0.9382 |         0.9729 |      0.9036 |
+| aug_80k | ANN  |   - |   0.9588 |            - |         0.9457 |      0.9715 |
+| aug_80k | SNN  | 128 |   0.8537 |       0.8559 |         0.9933 |      0.7185 |
+| aug_80k | SNN  | 256 |   0.9296 |       0.9304 |         0.9839 |      0.8770 |
+
+| Model     | Checkpoint | Threshold        | Readout                |   T | Accuracy | Balanced Acc |
+| --------- | ---------- | ---------------- | ---------------------- | --: | -------: | -----------: |
+| Final SNN | 80k        | 30k channel-wise | Output LIF spike count | 128 |   0.9500 |       0.9493 |
+| Final SNN | 80k        | 30k channel-wise | Output LIF spike count | 192 |   0.9550 |       0.9520 |
+| Final SNN | 80k        | 30k channel-wise | Output LIF spike count | 256 |   0.9575 |       0.9540 |
+
+30k thresholds AND 80k checkpoints
+Timesteps: 256
+Decay: 0.99
+Threshold scale: 1.0
+Scale output: True
+Use output LIF: False
+Max batches: None
+Excluded LIF layers: []
+Layer-specific threshold scales:
+  model.blocks.3.4.pw_exp.bn.act: 1.0
+  model.blocks.3.4.dw_mid.bn.act: 0.8
+  model.blocks.3.5.pw_exp.bn.act: 0.6
+  model.blocks.3.5.dw_mid.bn.act: 0.5
+  model.blocks.4.0.bn1.act: 0.175
+  model.norm_head.act: 0.075
+
+SNN Test Results
+================
+Test Loss: 0.1466
+Test Acc:  0.9504
+
+Class Accuracy
+==============
+no_ship: 0.9693 (2181/2250)
+ship:    0.9316 (2096/2250)
+
+Confusion Matrix
+================
+Rows = true label, columns = predicted label
+          pred_no_ship  pred_ship
+true_no_ship     2181          69
+true_ship         154        2096
+
+Extra Metrics
+=============
+ship precision:    0.9681
+ship recall:       0.9316
+ship F1:           0.9495
+no_ship precision: 0.9340
+no_ship recall:    0.9693
+no_ship F1:        0.9514
+balanced accuracy: 0.9504
+
+----------------------------------------------------------------------------------------
+
+80k thresholds AND 80k checkpoints
+Timesteps: 256
+Decay: 0.99
+Threshold scale: 1.0
+Scale output: True
+Use output LIF: False
+Max batches: 50
+Excluded LIF layers: []
+Layer-specific threshold scales:
+  model.blocks.3.4.pw_exp.bn.act: 1.0
+  model.blocks.3.4.dw_mid.bn.act: 0.8
+  model.blocks.3.5.pw_exp.bn.act: 0.55
+  model.blocks.3.5.dw_mid.bn.act: 0.45
+  model.blocks.4.0.bn1.act: 0.125
+  model.norm_head.act: 0.05
+
+SNN Test Results
+================
+Test Loss: 0.2205
+Test Acc:  0.9200
+
+Class Accuracy
+==============
+no_ship: 0.9859 (210/213)
+ship:    0.8449 (158/187)
+
+Confusion Matrix
+================
+Rows = true label, columns = predicted label
+          pred_no_ship  pred_ship
+true_no_ship      210           3
+true_ship          29         158
+
+Extra Metrics
+=============
+ship precision:    0.9814
+ship recall:       0.8449
+ship F1:           0.9080
+no_ship precision: 0.8787
+no_ship recall:    0.9859
+no_ship F1:        0.9292
+balanced accuracy: 0.9154
+
+-----------------------------------------------------------------------------------------
+
+Timesteps: 256
+Decay: 0.99
+Threshold scale: 1.0
+Scale output: True
+Use output LIF: False
+Max batches: 50
+Excluded LIF layers: []
+Layer-specific threshold scales:
+  model.blocks.3.4.pw_exp.bn.act: 1.0
+  model.blocks.3.4.dw_mid.bn.act: 0.8
+  model.blocks.3.5.pw_exp.bn.act: 0.6
+  model.blocks.3.5.dw_mid.bn.act: 0.5
+  model.blocks.4.0.bn1.act: 0.15
+  model.norm_head.act: 0.06
+
+SNN Test Results
+================
+Test Loss: 0.1955
+Test Acc:  0.9250
+
+Class Accuracy
+==============
+no_ship: 0.9812 (209/213)
+ship:    0.8610 (161/187)
+
+Confusion Matrix
+================
+Rows = true label, columns = predicted label
+          pred_no_ship  pred_ship
+true_no_ship      209           4
+true_ship          26         161
+
+Extra Metrics
+=============
+ship precision:    0.9758
+ship recall:       0.8610
+ship F1:           0.9148
+no_ship precision: 0.8894
+no_ship recall:    0.9812
+no_ship F1:        0.9330
+balanced accuracy: 0.9211
+
+------------------------------------------------------------------------------------------
+
+Timesteps: 256
+Decay: 0.99
+Threshold scale: 1.0
+Scale output: True
+Use output LIF: False
+Max batches: 50
+Excluded LIF layers: []
+Layer-specific threshold scales:
+  model.blocks.3.4.pw_exp.bn.act: 1.0
+  model.blocks.3.4.dw_mid.bn.act: 0.8
+  model.blocks.3.5.pw_exp.bn.act: 0.6
+  model.blocks.3.5.dw_mid.bn.act: 0.5
+  model.blocks.4.0.bn1.act: 0.175
+  model.norm_head.act: 0.075
+
+SNN Test Results
+================
+Test Loss: 0.1774
+Test Acc:  0.9425
+
+Class Accuracy
+==============
+no_ship: 0.9812 (209/213)
+ship:    0.8984 (168/187)
+
+Confusion Matrix
+================
+Rows = true label, columns = predicted label
+          pred_no_ship  pred_ship
+true_no_ship      209           4
+true_ship          19         168
+
+Extra Metrics
+=============
+ship precision:    0.9767
+ship recall:       0.8984
+ship F1:           0.9359
+no_ship precision: 0.9167
+no_ship recall:    0.9812
+no_ship F1:        0.9478
+balanced accuracy: 0.9398
+
+-------------------------------------------------------------------------------------------
+
+Cross-calibrated SNN evaluated on 30k test set.
+Timesteps: 256
+Decay: 0.99
+Threshold scale: 1.0
+Scale output: True
+Use output LIF: False
+Max batches: None
+Excluded LIF layers: []
+Layer-specific threshold scales:
+  model.blocks.3.4.pw_exp.bn.act: 1.0
+  model.blocks.3.4.dw_mid.bn.act: 0.8
+  model.blocks.3.5.pw_exp.bn.act: 0.6
+  model.blocks.3.5.dw_mid.bn.act: 0.5
+  model.blocks.4.0.bn1.act: 0.175
+  model.norm_head.act: 0.075
+Loaded 4500 samples from 30k_data\split\test\test.csv
+
+SNN Test Results
+================
+Test Loss: 0.1466
+Test Acc:  0.9504
+
+Class Accuracy
+==============
+no_ship: 0.9693 (2181/2250)
+ship:    0.9316 (2096/2250)
+
+Confusion Matrix
+================
+Rows = true label, columns = predicted label
+          pred_no_ship  pred_ship
+true_no_ship     2181          69
+true_ship         154        2096
+
+Extra Metrics
+=============
+ship precision:    0.9681
+ship recall:       0.9316
+ship F1:           0.9495
+no_ship precision: 0.9340
+no_ship recall:    0.9693
+no_ship F1:        0.9514
+balanced accuracy: 0.9504
+
+-------------------------------------------------------------------------------------------
+
+Checkpoint: checkpoints/aug_80k_best_mobilenetv4_ship_classifier.pth
+Thresholds: checkpoints/aug_30k_activation_thresholds.pth
+Test CSV: 30k_data/split/test/test.csv
+Timesteps: [128, 192, 256]
+Output current mode: shift
+Max batches: 50
+Loaded 4500 samples from 30k_data\split\test\test.csv
+Mode: eval without augmentation
+
+Testing timestep: 128
+output_threshold=1.0 | Acc=0.9025 | Balanced=0.9140 | no_ship_recall=0.9600 | ship_recall=0.8680 | pred_no_ship=177 | pred_ship=223
+
+Testing timestep: 192
+output_threshold=1.0 | Acc=0.9375 | Balanced=0.9407 | no_ship_recall=0.9533 | ship_recall=0.9280 | pred_no_ship=161 | pred_ship=239
+
+Testing timestep: 256
+output_threshold=1.0 | Acc=0.9450 | Balanced=0.9467 | no_ship_recall=0.9533 | ship_recall=0.9400 | pred_no_ship=158 | pred_ship=242
+
+
+--------------------------------------------------------------------------------------------
+CHANNEL-WISE THRESHOLDS
+
+Checkpoint: checkpoints/aug_80k_best_mobilenetv4_ship_classifier.pth
+Thresholds: checkpoints/aug_80k_on30k_channelwise_thresholds.pth
+Test CSV: 30k_data/split/test/test.csv
+Timesteps: [128, 192, 256]
+Output current mode: shift
+Max batches: 50
+Loaded 4500 samples from 30k_data\split\test\test.csv
+Mode: eval without augmentation
+
+Testing timestep: 128
+output_threshold=1.0 | Acc=0.9500 | Balanced=0.9493 | no_ship_recall=0.9467 | ship_recall=0.9520 | pred_no_ship=154 | pred_ship=246
+
+Testing timestep: 192
+output_threshold=1.0 | Acc=0.9550 | Balanced=0.9520 | no_ship_recall=0.9400 | ship_recall=0.9640 | pred_no_ship=150 | pred_ship=250
+
+Testing timestep: 256
+output_threshold=1.0 | Acc=0.9575 | Balanced=0.9540 | no_ship_recall=0.9400 | ship_recall=0.9680 | pred_no_ship=149 | pred_ship=251
+
+--------------------------------------------------------------------------------------------
+BN FOLDING + ZERO CLASSIFIER BIAS
+
+Checkpoint: checkpoints/aug_80k_best_mobilenetv4_ship_classifier.pth
+Thresholds: checkpoints/aug_80k_on30k_channelwise_thresholds.pth
+Test CSV: 30k_data/split/test/test.csv
+Timesteps: [128, 192, 256]
+Output current mode: shift
+Max batches: 50
+Fold BN: True
+Zero classifier bias: False
+Loaded 4500 samples from 30k_data\split\test\test.csv
+Mode: eval without augmentation
+
+Testing timestep: 128
+output_threshold=1.0 | Acc=0.9500 | Balanced=0.9493 | no_ship_recall=0.9467 | ship_recall=0.9520 | pred_no_ship=154 | pred_ship=246
+
+Testing timestep: 192
+output_threshold=1.0 | Acc=0.9550 | Balanced=0.9520 | no_ship_recall=0.9400 | ship_recall=0.9640 | pred_no_ship=150 | pred_ship=250
+
+Testing timestep: 256
+output_threshold=1.0 | Acc=0.9575 | Balanced=0.9540 | no_ship_recall=0.9400 | ship_recall=0.9680 | pred_no_ship=149 | pred_ship=251
+
+---------------------------------------------------------------------------------------------
+
+Checkpoint: checkpoints/aug_80k_best_mobilenetv4_ship_classifier.pth
+Thresholds: checkpoints/aug_80k_on30k_channelwise_thresholds.pth
+Test CSV: 30k_data/split/test/test.csv
+Timesteps: [128, 192, 256]
+Output current mode: shift
+Max batches: 50
+Fold BN: True
+Zero classifier bias: True
+Loaded 4500 samples from 30k_data\split\test\test.csv
+Mode: eval without augmentation
+
+Testing timestep: 128
+output_threshold=1.0 | Acc=0.9500 | Balanced=0.9493 | no_ship_recall=0.9467 | ship_recall=0.9520 | pred_no_ship=154 | pred_ship=246
+
+Testing timestep: 192
+output_threshold=1.0 | Acc=0.9550 | Balanced=0.9520 | no_ship_recall=0.9400 | ship_recall=0.9640 | pred_no_ship=150 | pred_ship=250
+
+Testing timestep: 256
+output_threshold=1.0 | Acc=0.9575 | Balanced=0.9540 | no_ship_recall=0.9400 | ship_recall=0.9680 | pred_no_ship=149 | pred_ship=251
+
+---------------------------------------------------------------------------------------------
+30k checkpoint + 30k thresholds
+Timesteps: 256
+Decay: 0.99
+Threshold scale: 1.0
+Scale output: True
+Use output LIF: False
+Max batches: 200
+
+SNN Test Results
+================
+Test Loss: 0.1687
+Test Acc:  0.9344
+
+Class Accuracy
+==============
+no_ship: 0.9646 (708/734)
+ship:    0.9088 (787/866)
+
+Confusion Matrix
+================
+Rows = true label, columns = predicted label
+          pred_no_ship  pred_ship
+true_no_ship      708          26
+true_ship          79         787
+
+Extra Metrics
+=============
+ship precision:    0.9680
+ship recall:       0.9088
+ship F1:           0.9375
+no_ship precision: 0.8996
+no_ship recall:    0.9646
+no_ship F1:        0.9310
+balanced accuracy: 0.9367
+
+----------------------------------------------------------------------------------------------
+
+80k checkpoint + 80k thresholds
+Timesteps: 256
+Decay: 0.99
+Threshold scale: 1.0
+Scale output: True
+Use output LIF: False
+Max batches: 200
+
+SNN Test Results
+================
+Test Loss: 0.2112
+Test Acc:  0.9319
+
+Class Accuracy
+==============
+no_ship: 0.9659 (709/734)
+ship:    0.9030 (782/866)
+
+Confusion Matrix
+================
+Rows = true label, columns = predicted label
+          pred_no_ship  pred_ship
+true_no_ship      709          25
+true_ship          84         782
+
+Extra Metrics
+=============
+ship precision:    0.9690
+ship recall:       0.9030
+ship F1:           0.9348
+no_ship precision: 0.8941
+no_ship recall:    0.9659
+no_ship F1:        0.9286
+balanced accuracy: 0.9345
+
+-----------------------------------------------------------------------------------------------
+
+80k checkpoint + 30k thresholds
+Timesteps: 256
+Decay: 0.99
+Threshold scale: 1.0
+Scale output: True
+Use output LIF: False
+Max batches: 200
+
+SNN Test Results
+================
+Test Loss: 0.1542
+Test Acc:  0.9431
+
+Class Accuracy
+==============
+no_ship: 0.9523 (699/734)
+ship:    0.9353 (810/866)
+
+Confusion Matrix
+================
+Rows = true label, columns = predicted label
+          pred_no_ship  pred_ship
+true_no_ship      699          35
+true_ship          56         810
+
+Extra Metrics
+=============
+ship precision:    0.9586
+ship recall:       0.9353
+ship F1:           0.9468
+no_ship precision: 0.9258
+no_ship recall:    0.9523
+no_ship F1:        0.9389
+balanced accuracy: 0.9438
+
+-----------------------------------------------------------------------------------------------
+
+30k checkpoint + 80k thresholds
+Timesteps: 256
+Decay: 0.99
+Threshold scale: 1.0
+Scale output: True
+Use output LIF: False
+Max batches: 200
+
+SNN Test Results
+================
+Test Loss: 0.3068
+Test Acc:  0.8619
+
+Class Accuracy
+==============
+no_ship: 0.9864 (724/734)
+ship:    0.7564 (655/866)
+
+Confusion Matrix
+================
+Rows = true label, columns = predicted label
+          pred_no_ship  pred_ship
+true_no_ship      724          10
+true_ship         211         655
+
+Extra Metrics
+=============
+ship precision:    0.9850
+ship recall:       0.7564
+ship F1:           0.8556
+no_ship precision: 0.7743
+no_ship recall:    0.9864
+no_ship F1:        0.8676
+balanced accuracy: 0.8714
+
+The final channel-wise results were measured on a 50-batch evaluation subset. 
+Full-test validation can be performed if needed.
+
+===========================================================================================
+
+CROSS-CALIBRATION:
+
+The best SNN configuration was obtained using a cross-calibrated setup. The ANN weights were taken from
+the augmented 80k checkpoint, while the activation thresholds were calibrated using the 30k calibration data.
+
+This shows that the best ANN checkpoint and the best SNN threshold calibration source do not necessarily
+have to be the same.
+
+===========================================================================================
+
+HARDWARE IMPLEMENTATION NOTES:
+
+1. Conv layers are not fully connected.
+2. Depthwise Conv should be implemented separately from pointwise Conv.
+3. LIF state memory is required for each activation tensor.
+4. Channel-wise thresholds require per-channel threshold storage.
+5. BN is folded into Conv, so no separate BN hardware block is required.
+6. Output decision is based on spike count over T timesteps.
+7. Selected T is 192 for latency/accuracy balance.
+8. Subtraction reset is used after spike generation.
+
+===========================================================================================
+
+MODEL AND CONFIG FILES:
+
+All files are in the "SNN_Hardware_Implementation_Package" folder.

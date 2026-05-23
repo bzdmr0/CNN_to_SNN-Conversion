@@ -1,0 +1,16 @@
+checkpoint_path = "checkpoints/aug_80k_best_mobilenetv4_ship_classifier.pth"
+threshold_path = "checkpoints/aug_80k_on30k_channelwise_thresholds.pth"
+
+timesteps = 192
+decay = 0.99
+threshold_scale = 1.0
+scale_output = True
+
+use_output_lif = True
+output_threshold = 1.0
+output_current_mode = "shift"
+
+layer_threshold_scales = {}
+
+
+T=128 also gives very good results.

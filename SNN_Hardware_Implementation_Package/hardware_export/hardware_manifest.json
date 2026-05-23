@@ -1,0 +1,1944 @@
+{
+    "model_info": {
+        "checkpoint_path": "checkpoints/aug_80k_best_mobilenetv4_ship_classifier.pth",
+        "threshold_path": "checkpoints/aug_80k_on30k_channelwise_thresholds.pth",
+        "timesteps": 128,
+        "decay": 0.99,
+        "threshold_scale": 1.0,
+        "scale_output": true,
+        "use_output_lif": true,
+        "output_threshold": 1.0,
+        "output_current_mode": "shift",
+        "fold_bn": true,
+        "zero_classifier_bias": true
+    },
+    "layers": [
+        {
+            "order": 0,
+            "name": "model.model.conv_stem",
+            "type": "Conv2d",
+            "conv_type": "standard",
+            "in_channels": 3,
+            "out_channels": 32,
+            "kernel_size": [
+                3,
+                3
+            ],
+            "stride": [
+                2,
+                2
+            ],
+            "padding": [
+                1,
+                1
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__conv_stem__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.bn1.act"
+        },
+        {
+            "order": 1,
+            "name": "model.model.bn1.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__bn1__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                32,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 2,
+            "name": "model.model.blocks.0.0.conv",
+            "type": "Conv2d",
+            "conv_type": "standard",
+            "in_channels": 32,
+            "out_channels": 32,
+            "kernel_size": [
+                3,
+                3
+            ],
+            "stride": [
+                2,
+                2
+            ],
+            "padding": [
+                1,
+                1
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__0__0__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.0.0.bn1.act"
+        },
+        {
+            "order": 3,
+            "name": "model.model.blocks.0.0.bn1.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__0__0__bn1__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                32,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 4,
+            "name": "model.model.blocks.0.1.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 32,
+            "out_channels": 32,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__0__1__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.0.1.bn1.act"
+        },
+        {
+            "order": 5,
+            "name": "model.model.blocks.0.1.bn1.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__0__1__bn1__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                32,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 6,
+            "name": "model.model.blocks.1.0.conv",
+            "type": "Conv2d",
+            "conv_type": "standard",
+            "in_channels": 32,
+            "out_channels": 96,
+            "kernel_size": [
+                3,
+                3
+            ],
+            "stride": [
+                2,
+                2
+            ],
+            "padding": [
+                1,
+                1
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__1__0__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.1.0.bn1.act"
+        },
+        {
+            "order": 7,
+            "name": "model.model.blocks.1.0.bn1.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__1__0__bn1__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                96,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 8,
+            "name": "model.model.blocks.1.1.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 96,
+            "out_channels": 64,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__1__1__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.1.1.bn1.act"
+        },
+        {
+            "order": 9,
+            "name": "model.model.blocks.1.1.bn1.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__1__1__bn1__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                64,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 10,
+            "name": "model.model.blocks.2.0.dw_start.conv",
+            "type": "Conv2d",
+            "conv_type": "depthwise",
+            "in_channels": 64,
+            "out_channels": 64,
+            "kernel_size": [
+                5,
+                5
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                2,
+                2
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 64,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__0__dw_start__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.2.0.pw_exp.bn.act"
+        },
+        {
+            "order": 11,
+            "name": "model.model.blocks.2.0.pw_exp.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 64,
+            "out_channels": 192,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__0__pw_exp__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.2.0.pw_exp.bn.act"
+        },
+        {
+            "order": 12,
+            "name": "model.model.blocks.2.0.pw_exp.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__2__0__pw_exp__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                192,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 13,
+            "name": "model.model.blocks.2.0.dw_mid.conv",
+            "type": "Conv2d",
+            "conv_type": "depthwise",
+            "in_channels": 192,
+            "out_channels": 192,
+            "kernel_size": [
+                5,
+                5
+            ],
+            "stride": [
+                2,
+                2
+            ],
+            "padding": [
+                2,
+                2
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 192,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__0__dw_mid__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.2.0.dw_mid.bn.act"
+        },
+        {
+            "order": 14,
+            "name": "model.model.blocks.2.0.dw_mid.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__2__0__dw_mid__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                192,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 15,
+            "name": "model.model.blocks.2.0.pw_proj.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 192,
+            "out_channels": 96,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__0__pw_proj__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.2.1.pw_exp.bn.act"
+        },
+        {
+            "order": 16,
+            "name": "model.model.blocks.2.1.pw_exp.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 96,
+            "out_channels": 192,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__1__pw_exp__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.2.1.pw_exp.bn.act"
+        },
+        {
+            "order": 17,
+            "name": "model.model.blocks.2.1.pw_exp.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__2__1__pw_exp__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                192,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 18,
+            "name": "model.model.blocks.2.1.dw_mid.conv",
+            "type": "Conv2d",
+            "conv_type": "depthwise",
+            "in_channels": 192,
+            "out_channels": 192,
+            "kernel_size": [
+                3,
+                3
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                1,
+                1
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 192,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__1__dw_mid__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.2.1.dw_mid.bn.act"
+        },
+        {
+            "order": 19,
+            "name": "model.model.blocks.2.1.dw_mid.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__2__1__dw_mid__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                192,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 20,
+            "name": "model.model.blocks.2.1.pw_proj.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 192,
+            "out_channels": 96,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__1__pw_proj__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.2.2.pw_exp.bn.act"
+        },
+        {
+            "order": 21,
+            "name": "model.model.blocks.2.2.pw_exp.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 96,
+            "out_channels": 192,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__2__pw_exp__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.2.2.pw_exp.bn.act"
+        },
+        {
+            "order": 22,
+            "name": "model.model.blocks.2.2.pw_exp.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__2__2__pw_exp__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                192,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 23,
+            "name": "model.model.blocks.2.2.dw_mid.conv",
+            "type": "Conv2d",
+            "conv_type": "depthwise",
+            "in_channels": 192,
+            "out_channels": 192,
+            "kernel_size": [
+                3,
+                3
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                1,
+                1
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 192,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__2__dw_mid__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.2.2.dw_mid.bn.act"
+        },
+        {
+            "order": 24,
+            "name": "model.model.blocks.2.2.dw_mid.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__2__2__dw_mid__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                192,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 25,
+            "name": "model.model.blocks.2.2.pw_proj.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 192,
+            "out_channels": 96,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__2__pw_proj__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.2.3.pw_exp.bn.act"
+        },
+        {
+            "order": 26,
+            "name": "model.model.blocks.2.3.pw_exp.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 96,
+            "out_channels": 192,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__3__pw_exp__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.2.3.pw_exp.bn.act"
+        },
+        {
+            "order": 27,
+            "name": "model.model.blocks.2.3.pw_exp.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__2__3__pw_exp__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                192,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 28,
+            "name": "model.model.blocks.2.3.dw_mid.conv",
+            "type": "Conv2d",
+            "conv_type": "depthwise",
+            "in_channels": 192,
+            "out_channels": 192,
+            "kernel_size": [
+                3,
+                3
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                1,
+                1
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 192,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__3__dw_mid__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.2.3.dw_mid.bn.act"
+        },
+        {
+            "order": 29,
+            "name": "model.model.blocks.2.3.dw_mid.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__2__3__dw_mid__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                192,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 30,
+            "name": "model.model.blocks.2.3.pw_proj.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 192,
+            "out_channels": 96,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__3__pw_proj__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.2.4.pw_exp.bn.act"
+        },
+        {
+            "order": 31,
+            "name": "model.model.blocks.2.4.pw_exp.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 96,
+            "out_channels": 192,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__4__pw_exp__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.2.4.pw_exp.bn.act"
+        },
+        {
+            "order": 32,
+            "name": "model.model.blocks.2.4.pw_exp.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__2__4__pw_exp__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                192,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 33,
+            "name": "model.model.blocks.2.4.dw_mid.conv",
+            "type": "Conv2d",
+            "conv_type": "depthwise",
+            "in_channels": 192,
+            "out_channels": 192,
+            "kernel_size": [
+                3,
+                3
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                1,
+                1
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 192,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__4__dw_mid__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.2.4.dw_mid.bn.act"
+        },
+        {
+            "order": 34,
+            "name": "model.model.blocks.2.4.dw_mid.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__2__4__dw_mid__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                192,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 35,
+            "name": "model.model.blocks.2.4.pw_proj.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 192,
+            "out_channels": 96,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__4__pw_proj__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.2.5.pw_exp.bn.act"
+        },
+        {
+            "order": 36,
+            "name": "model.model.blocks.2.5.dw_start.conv",
+            "type": "Conv2d",
+            "conv_type": "depthwise",
+            "in_channels": 96,
+            "out_channels": 96,
+            "kernel_size": [
+                3,
+                3
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                1,
+                1
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 96,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__5__dw_start__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.2.5.pw_exp.bn.act"
+        },
+        {
+            "order": 37,
+            "name": "model.model.blocks.2.5.pw_exp.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 96,
+            "out_channels": 384,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__5__pw_exp__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.2.5.pw_exp.bn.act"
+        },
+        {
+            "order": 38,
+            "name": "model.model.blocks.2.5.pw_exp.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__2__5__pw_exp__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                384,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 39,
+            "name": "model.model.blocks.2.5.pw_proj.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 384,
+            "out_channels": 96,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__2__5__pw_proj__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.0.pw_exp.bn.act"
+        },
+        {
+            "order": 40,
+            "name": "model.model.blocks.3.0.dw_start.conv",
+            "type": "Conv2d",
+            "conv_type": "depthwise",
+            "in_channels": 96,
+            "out_channels": 96,
+            "kernel_size": [
+                3,
+                3
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                1,
+                1
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 96,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__0__dw_start__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.0.pw_exp.bn.act"
+        },
+        {
+            "order": 41,
+            "name": "model.model.blocks.3.0.pw_exp.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 96,
+            "out_channels": 576,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__0__pw_exp__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.0.pw_exp.bn.act"
+        },
+        {
+            "order": 42,
+            "name": "model.model.blocks.3.0.pw_exp.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__3__0__pw_exp__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                576,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 43,
+            "name": "model.model.blocks.3.0.dw_mid.conv",
+            "type": "Conv2d",
+            "conv_type": "depthwise",
+            "in_channels": 576,
+            "out_channels": 576,
+            "kernel_size": [
+                3,
+                3
+            ],
+            "stride": [
+                2,
+                2
+            ],
+            "padding": [
+                1,
+                1
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 576,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__0__dw_mid__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.0.dw_mid.bn.act"
+        },
+        {
+            "order": 44,
+            "name": "model.model.blocks.3.0.dw_mid.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__3__0__dw_mid__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                576,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 45,
+            "name": "model.model.blocks.3.0.pw_proj.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 576,
+            "out_channels": 128,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__0__pw_proj__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.1.pw_exp.bn.act"
+        },
+        {
+            "order": 46,
+            "name": "model.model.blocks.3.1.dw_start.conv",
+            "type": "Conv2d",
+            "conv_type": "depthwise",
+            "in_channels": 128,
+            "out_channels": 128,
+            "kernel_size": [
+                5,
+                5
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                2,
+                2
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 128,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__1__dw_start__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.1.pw_exp.bn.act"
+        },
+        {
+            "order": 47,
+            "name": "model.model.blocks.3.1.pw_exp.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 128,
+            "out_channels": 512,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__1__pw_exp__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.1.pw_exp.bn.act"
+        },
+        {
+            "order": 48,
+            "name": "model.model.blocks.3.1.pw_exp.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__3__1__pw_exp__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                512,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 49,
+            "name": "model.model.blocks.3.1.dw_mid.conv",
+            "type": "Conv2d",
+            "conv_type": "depthwise",
+            "in_channels": 512,
+            "out_channels": 512,
+            "kernel_size": [
+                5,
+                5
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                2,
+                2
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 512,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__1__dw_mid__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.1.dw_mid.bn.act"
+        },
+        {
+            "order": 50,
+            "name": "model.model.blocks.3.1.dw_mid.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__3__1__dw_mid__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                512,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 51,
+            "name": "model.model.blocks.3.1.pw_proj.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 512,
+            "out_channels": 128,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__1__pw_proj__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.2.pw_exp.bn.act"
+        },
+        {
+            "order": 52,
+            "name": "model.model.blocks.3.2.pw_exp.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 128,
+            "out_channels": 512,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__2__pw_exp__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.2.pw_exp.bn.act"
+        },
+        {
+            "order": 53,
+            "name": "model.model.blocks.3.2.pw_exp.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__3__2__pw_exp__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                512,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 54,
+            "name": "model.model.blocks.3.2.dw_mid.conv",
+            "type": "Conv2d",
+            "conv_type": "depthwise",
+            "in_channels": 512,
+            "out_channels": 512,
+            "kernel_size": [
+                5,
+                5
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                2,
+                2
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 512,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__2__dw_mid__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.2.dw_mid.bn.act"
+        },
+        {
+            "order": 55,
+            "name": "model.model.blocks.3.2.dw_mid.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__3__2__dw_mid__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                512,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 56,
+            "name": "model.model.blocks.3.2.pw_proj.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 512,
+            "out_channels": 128,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__2__pw_proj__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.3.pw_exp.bn.act"
+        },
+        {
+            "order": 57,
+            "name": "model.model.blocks.3.3.pw_exp.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 128,
+            "out_channels": 384,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__3__pw_exp__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.3.pw_exp.bn.act"
+        },
+        {
+            "order": 58,
+            "name": "model.model.blocks.3.3.pw_exp.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__3__3__pw_exp__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                384,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 59,
+            "name": "model.model.blocks.3.3.dw_mid.conv",
+            "type": "Conv2d",
+            "conv_type": "depthwise",
+            "in_channels": 384,
+            "out_channels": 384,
+            "kernel_size": [
+                5,
+                5
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                2,
+                2
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 384,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__3__dw_mid__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.3.dw_mid.bn.act"
+        },
+        {
+            "order": 60,
+            "name": "model.model.blocks.3.3.dw_mid.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__3__3__dw_mid__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                384,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 61,
+            "name": "model.model.blocks.3.3.pw_proj.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 384,
+            "out_channels": 128,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__3__pw_proj__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.4.pw_exp.bn.act"
+        },
+        {
+            "order": 62,
+            "name": "model.model.blocks.3.4.pw_exp.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 128,
+            "out_channels": 512,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__4__pw_exp__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.4.pw_exp.bn.act"
+        },
+        {
+            "order": 63,
+            "name": "model.model.blocks.3.4.pw_exp.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__3__4__pw_exp__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                512,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 64,
+            "name": "model.model.blocks.3.4.dw_mid.conv",
+            "type": "Conv2d",
+            "conv_type": "depthwise",
+            "in_channels": 512,
+            "out_channels": 512,
+            "kernel_size": [
+                3,
+                3
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                1,
+                1
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 512,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__4__dw_mid__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.4.dw_mid.bn.act"
+        },
+        {
+            "order": 65,
+            "name": "model.model.blocks.3.4.dw_mid.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__3__4__dw_mid__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                512,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 66,
+            "name": "model.model.blocks.3.4.pw_proj.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 512,
+            "out_channels": 128,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__4__pw_proj__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.5.pw_exp.bn.act"
+        },
+        {
+            "order": 67,
+            "name": "model.model.blocks.3.5.pw_exp.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 128,
+            "out_channels": 512,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__5__pw_exp__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.5.pw_exp.bn.act"
+        },
+        {
+            "order": 68,
+            "name": "model.model.blocks.3.5.pw_exp.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__3__5__pw_exp__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                512,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 69,
+            "name": "model.model.blocks.3.5.dw_mid.conv",
+            "type": "Conv2d",
+            "conv_type": "depthwise",
+            "in_channels": 512,
+            "out_channels": 512,
+            "kernel_size": [
+                3,
+                3
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                1,
+                1
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 512,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__5__dw_mid__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.3.5.dw_mid.bn.act"
+        },
+        {
+            "order": 70,
+            "name": "model.model.blocks.3.5.dw_mid.bn.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__3__5__dw_mid__bn__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                512,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 71,
+            "name": "model.model.blocks.3.5.pw_proj.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 512,
+            "out_channels": 128,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__3__5__pw_proj__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.4.0.bn1.act"
+        },
+        {
+            "order": 72,
+            "name": "model.model.blocks.4.0.conv",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 128,
+            "out_channels": 960,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__blocks__4__0__conv__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.blocks.4.0.bn1.act"
+        },
+        {
+            "order": 73,
+            "name": "model.model.blocks.4.0.bn1.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__blocks__4__0__bn1__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                960,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 74,
+            "name": "model.model.conv_head",
+            "type": "Conv2d",
+            "conv_type": "pointwise",
+            "in_channels": 960,
+            "out_channels": 1280,
+            "kernel_size": [
+                1,
+                1
+            ],
+            "stride": [
+                1,
+                1
+            ],
+            "padding": [
+                0,
+                0
+            ],
+            "dilation": [
+                1,
+                1
+            ],
+            "groups": 1,
+            "has_bias": false,
+            "bn_folded": false,
+            "folded_from_bn": null,
+            "weight_file": "hardware_export\\model__model__conv_head__weight.pt",
+            "bias_file": null,
+            "next_lif_layer": "model.model.norm_head.act"
+        },
+        {
+            "order": 75,
+            "name": "model.model.norm_head.act",
+            "type": "ScaledLIFNeuron",
+            "threshold_file": "hardware_export\\model__model__norm_head__act__threshold.pt",
+            "threshold_shape": [
+                1,
+                1280,
+                1,
+                1
+            ],
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "scale_output": true,
+            "reset_type": "subtraction"
+        },
+        {
+            "order": 76,
+            "name": "model.model.classifier",
+            "type": "Linear",
+            "in_features": 1280,
+            "out_features": 2,
+            "has_bias": true,
+            "weight_file": "hardware_export\\model__model__classifier__weight.pt",
+            "bias_file": "hardware_export\\model__model__classifier__bias.pt"
+        },
+        {
+            "order": 77,
+            "name": "output_lif",
+            "type": "OutputLIFNeuron",
+            "threshold": 1.0,
+            "decay": 0.99,
+            "threshold_scale": 1.0,
+            "current_mode": "shift",
+            "reset_type": "subtraction",
+            "decision": "argmax_spike_count"
+        }
+    ]
+}
