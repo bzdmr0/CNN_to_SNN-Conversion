@@ -2,7 +2,7 @@
 
 This project converts a MobileNetV4-based convolutional neural network into a Leaky Integrate-and-Fire Spiking Neural Network for binary satellite image classification.
 
-The target task is to classify each image as either `no_ship` or `ship`. The final package also includes hardware-oriented SNN artifacts for FPGA/ASIC-style implementation.
+The target task is to classify each image as either `no_ship` or `ship`. The package also includes hardware-oriented SNN artifacts for FPGA/ASIC-style implementation.
 
 ## Highlights
 
@@ -15,11 +15,11 @@ The target task is to classify each image as either `no_ship` or `ship`. The fin
 | SNN neuron | Leaky Integrate-and-Fire |
 | Conversion method | ANN-to-SNN conversion |
 | Threshold type | Channel-wise activation thresholds |
-| Final readout | Output LIF spike count |
-| Recommended timestep | `T = 128` |
+| Output readout | Output LIF spike count |
+| Packaged timestep | `T = 128` |
 | Hardware focus | Folded Conv/BN, LIF thresholds, exported weights |
 
-The best SNN setup uses the ANN weights trained on the augmented 80k dataset and channel-wise thresholds calibrated on the 30k dataset. This cross-calibrated setup produced the strongest SNN results in the experiments.
+The packaged SNN setup uses ANN weights trained on the augmented 80k dataset and channel-wise thresholds calibrated on the 30k dataset. This cross-calibrated setup is one of the evaluated configurations in the project.
 
 ## Repository Contents
 
@@ -73,7 +73,7 @@ BatchNorm can be folded into the preceding convolution, so the exported hardware
 
 ## Conversion Strategy and References
 
-The ANN-to-SNN conversion strategy used in this project was inspired by prior CNN-to-SNN conversion methods, including rate-based spiking inference, threshold calibration, spike-count output decisions, and BN/activation normalization techniques. The final model follows a LIF-based conversion approach where ReLU activations are replaced by calibrated LIF neurons, convolutional weights are preserved, BatchNorm is folded into Conv layers, and the output decision is made using spike counts over multiple timesteps.
+The ANN-to-SNN conversion strategy used in this project was inspired by prior CNN-to-SNN conversion methods, including rate-based spiking inference, threshold calibration, spike-count output decisions, and BN/activation normalization techniques. The converted model follows a LIF-based conversion approach where ReLU activations are replaced by calibrated LIF neurons, convolutional weights are preserved, BatchNorm is folded into Conv layers, and the output decision is made using spike counts over multiple timesteps.
 
 References used for ANN-to-SNN conversion:
 
@@ -99,11 +99,11 @@ mem = mem - spike
 
 When `scale_output=True`, the spike output is multiplied back by the effective threshold. This helps keep the activation scale closer to the original ANN layers.
 
-The final classifier can also use `OutputLIFNeuron`. In the final configuration, the model compares accumulated output spike counts and selects the class with the larger count.
+The classifier output can also use `OutputLIFNeuron`. In the packaged configuration, the model compares accumulated output spike counts and selects the class with the larger count.
 
-## Final Configuration
+## Packaged Configuration
 
-The selected configuration is stored in:
+The configuration used by the packaged model is stored in:
 
 ```text
 SNN_Hardware_Implementation_Package/best_config.txt
@@ -125,8 +125,7 @@ output_current_mode = "shift"
 layer_threshold_scales = {}
 ```
 
-`T = 128` was selected as the main latency/accuracy trade-off point, while 
-`T = 256` and `T = 192` give slightly higher accuracy at higher inference cost.
+`T = 128` is used in the packaged configuration. Additional experiments also evaluated `T = 192` and `T = 256`.
 
 ## Results
 
@@ -137,21 +136,21 @@ layer_threshold_scales = {}
 | 30k ANN | 0.9556 | 0.9471 | 0.9640 |
 | 80k ANN | 0.9588 | 0.9457 | 0.9715 |
 
-The 80k ANN was selected as the final ANN baseline because it slightly improved total accuracy and improved ship recall.
+The 80k ANN was used as the ANN checkpoint for the packaged SNN because it slightly improved total accuracy and ship recall in the recorded ANN experiments.
 
-### Final Channel-Wise SNN
+### Channel-Wise SNN Results
 
 | Model | Checkpoint | Thresholds | Readout | T | Accuracy | Balanced Accuracy |
 | --- | --- | --- | --- | ---: | ---: | ---: |
-| Final SNN | 80k | 30k channel-wise | Output LIF spike count | 128 | 0.9500 | 0.9493 |
-| Final SNN | 80k | 30k channel-wise | Output LIF spike count | 192 | 0.9550 | 0.9520 |
-| Final SNN | 80k | 30k channel-wise | Output LIF spike count | 256 | 0.9575 | 0.9540 |
+| Packaged SNN | 80k | 30k channel-wise | Output LIF spike count | 128 | 0.9500 | 0.9493 |
+| Packaged SNN | 80k | 30k channel-wise | Output LIF spike count | 192 | 0.9550 | 0.9520 |
+| Packaged SNN | 80k | 30k channel-wise | Output LIF spike count | 256 | 0.9575 | 0.9540 |
 
 Channel-wise threshold calibration was important. It improved SNN stability by assigning a separate threshold to each output channel instead of using a single scalar threshold per layer.
 
 ## Development Pipeline
 
-The full project workflow used to produce the final package was:
+The full project workflow used to produce the package was:
 
 1. Prepare dataset splits.
 
@@ -182,7 +181,7 @@ python calibrate_thresholds.py
 python calibrate_channelwise_thresholds.py
 ```
 
-The final model uses:
+The packaged model uses:
 
 ```text
 80k ANN checkpoint + 30k channel-wise threshold calibration
@@ -220,7 +219,7 @@ Run from inside the package directory:
 cd SNN_Hardware_Implementation_Package
 ```
 
-Example inference with the final SNN:
+Example inference with the packaged SNN:
 
 ```python
 import torch
@@ -289,7 +288,7 @@ Hardware implementation notes:
 
 ## Threshold Format
 
-The final SNN uses channel-wise thresholds:
+The packaged SNN uses channel-wise thresholds:
 
 | Threshold type | Shape | Meaning |
 | --- | --- | --- |
